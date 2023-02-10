@@ -61,3 +61,19 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
       
 # 7. Total Feedback that each agent have received.
      select sum(Total_feedback) from agent_performance;
+     # answer: 9259
+     
+# 8. Agent name who have average rating between 3.5 to 4 
+     select Agent from agent_performance where avg_rating >=3.5 and  avg_rating<=4.0;
+     
+# 9. Agent name who have rating less than 3.5 
+     select Agent from agent_performance where avg_rating < 3.5;
+     
+# 10. Agent name who have rating more than 4.5 
+      select Agent from agent_performance where avg_rating > 4.5;
+      
+# 11. How many feedback agents have received more than 4.5 average.
+       select sum(Total_feedback) from agent_performance where avg_rating > 4.5;
+       # answer: 3489
+       
+# 12. Average weekly response time for each agent.
