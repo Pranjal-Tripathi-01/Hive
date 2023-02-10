@@ -6,6 +6,7 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
 # 1. Create a schema based on the given dataset
     create database hive_projects
     use hive_project
+    
     create table agent_loging_report
     (
     sl_no int,
@@ -34,6 +35,13 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
 
 
 # 2. Dump the data inside the hdfs in the given schema location.
+     # creating directory inside hadoop
+     hadoop fs -mkdir /hive_project_data
+     
+     # dumping data into hdfs
+     hadoop fs -put /config/workspace/AgentLogingReport.csv /hive_project_data
+     
+     # loading data from hdfs to hive table
      load data inpath 'file:////config/workspace/AgentLogingReport.csv' into table agent_loging_report;
     
 # 3. List of all agents' names. 
