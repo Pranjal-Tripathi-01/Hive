@@ -1,1 +1,49 @@
-##1.	Create a schema based on the given dataset
+Download Dataset 1 - https://drive.google.com/file/d/1WrG-9qv6atP-W3P_-gYln1hHyFKRKMHP/view
+
+Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq6vTVXU/view
+
+
+# 1. Create a schema based on the given dataset
+    create table agent_loging_report
+    (
+    sl_no int,
+    Agent string,
+    `Date` string,
+    Login_time string,
+    Log_out string,
+    Duration string
+    )
+    row format delimited
+    fields terminated by ',';
+    
+    create table agent_performance
+    (
+    S_No int,
+    `Date` string,
+    Agent string,
+    Total_chats int,
+    avg_reposnse_time string,
+    avg_resolution_time string,
+    avg_rating float,
+    Total_feedback int
+    )
+    row format delimited
+    fields terminated by ',';
+
+
+# 2. Dump the data inside the hdfs in the given schema location.
+     load data inpath 'file:////config/workspace/AgentLogingReport.csv' into table agent_loging_report;
+    
+# 3. List of all agents' names. 
+     select Agent from agent_loging_report;
+     
+# 4. Find out agent average rating.
+      select avg(avg_rating) from agent_performance;
+      # answer: 1.4609629649255012
+      
+# 5. Total working days for each agents
+      select count(distinct `Date`) from agent_loging_report;
+      # answer: 13
+      
+# 6. Total query that each agent have taken
+     
