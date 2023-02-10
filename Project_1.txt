@@ -4,6 +4,8 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
 
 
 # 1. Create a schema based on the given dataset
+    create database hive_projects
+    use hive_project
     create table agent_loging_report
     (
     sl_no int,
@@ -46,4 +48,8 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
       # answer: 13
       
 # 6. Total query that each agent have taken
-     
+      select sum(Total_chats) from agent_performance;
+      # answer: 14720
+      
+# 7. Total Feedback that each agent have received.
+     select sum(Total_feedback) from agent_performance;
