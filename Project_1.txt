@@ -77,10 +77,11 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
        # answer: 3489
        
 # 12. Average weekly response time for each agent.
-      select avg_response_time from agent_performance;
+      select Agent, avg(Duration) as avg_response_time, yearweek(`Date`) as year_week from agent_loging_report group by Agent, year_week;
+
       
 # 13. average weekly resolution time for each agents.
-      select avg_resolution_time from agent_performance;
+      
       
 # 14. Find the number of chat on which they have received a feedback.
       select sum(Total_chats) from agent_performance where Total_feedback > 0;
