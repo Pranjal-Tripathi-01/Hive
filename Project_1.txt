@@ -25,7 +25,7 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
     `Date` string,
     Agent string,
     Total_chats int,
-    avg_reposnse_time string,
+    avg_response_time string,
     avg_resolution_time string,
     avg_rating float,
     Total_feedback int
