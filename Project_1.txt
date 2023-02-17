@@ -42,9 +42,11 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
      
      # dumping data into hdfs
      hadoop fs -put /config/workspace/AgentLogingReport.csv /hive_project_data
+     hadoop fs -put /config/workspace/AgentPerformance.csv /hive_project_data
      
      # loading data from hdfs to hive table
      load data inpath 'file:////config/workspace/AgentLogingReport.csv' into table agent_loging_report;
+     load data inpath 'file:////config/workspace/AgentPerformance.csv' into table agent_performance;
     
 # 3. List of all agents' names. 
      select Agent from agent_loging_report;
@@ -108,15 +110,15 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
       on agent_loging_report.Agent = agent_performance.Agent; 
       
       # Left Join
-      insert overwrite local directory ' /config/workspace' select * from agrnt_loging_report left join  agent_performance 
+      insert overwrite local directory ' /config/workspace' select * from agent_loging_report left outer join  agent_performance 
       on agent_loging_report.Agent = agent_performance.Agent; 
       
       # Inner Join
-      insert overwrite local directory ' /config/workspace' select * from agrnt_loging_report inner join  agent_performance 
+      insert overwrite local directory ' /config/workspace' select * from agent_loging_report inner join  agent_performance 
       on agent_loging_report.Agent = agent_performance.Agent; 
       
       # Outer Join
-      insert overwrite local directory ' /config/workspace' select * from agrnt_loging_report outer join  agent_performance 
+      insert overwrite local directory ' /config/workspace' select * from agent_loging_report outer join  agent_performance 
       on agent_loging_report.Agent = agent_performance.Agent; 
       
 # 17. Perform partitioning on top of the agent column and then on top of that perform bucketing for each partitioning.
@@ -129,7 +131,9 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
       Duration string
       )
       partitioned by (Agent string)
-      clustered by (`Date`) into 10 buckets
+      clustered by (`Date`)
+      sorted by (Duration)
+      into 20 buckets
       row format delimited
       fields terminated by ','
       tblproperties ("skip.header.line.count"="1");
@@ -137,7 +141,6 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
       # Checking the partition table into hdfs warehouse
       hadoop fs -ls /user/hive/warehouse/agent_loging_report_part
       
-      #result : 2023-02-17 18:04 /user/hive/warehouse/agent_loging_report_part/.hive-staging_hive_2023-02-17_18-04-16_035_1750983968387770284-1
 
       
 
