@@ -17,7 +17,8 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
     Duration string
     )
     row format delimited
-    fields terminated by ',';
+    fields terminated by ','
+    tblproperties ("skip.header.line.count"="1");
     
     create table agent_performance
     (
@@ -32,6 +33,7 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
     )
     row format delimited
     fields terminated by ',';
+    tblproperties ("skip.header.line.count"="1");
 
 
 # 2. Dump the data inside the hdfs in the given schema location.
@@ -77,13 +79,65 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
        # answer: 3489
        
 # 12. Average weekly response time for each agent.
-      select Agent, avg(Duration) as avg_response_time, yearweek(`Date`) as year_week from agent_loging_report group by Agent, year_week;
+      set hive.groupby.position.alias = true;
+      select Agent, date_format(`Date`,'W') week_no, 
+      avg((split(avg_response_time ,':')[0]*3600 +split(avg_response_time ,':')[1]*60+split(avg_response_time ,':')[2] )/3600) avg_weekly_response_time
+      from agent_performance group by 1,2;
 
       
-# 13. average weekly resolution time for each agents.
+# 13. Average weekly resolution time for each agents.
+      set hive.groupby.position.alias = true;
+      select Agent, date_format(`Date`,'W') week_no, 
+      avg((split(avg_resolution_time,':')[0]*3600 +split(avg_resolution_time,':')[1]*60+split(avg_resolution_time,':')[2] )/3600) avg_weekly_resolution_time
+      from agent_performance group by 1,2;
       
       
 # 14. Find the number of chat on which they have received a feedback.
       select sum(Total_chats) from agent_performance where Total_feedback > 0;
       # answer : 14702
+      
+# 15. Total contribution hour for each and every agents weekly basis.
+      set hive.groupby.position.alias = true;
+      select Agent, date_format(`Date`,'W') week_no, 
+      sum((split(Duration,':')[0]*3600 +split(Duration,':')[1]*60+split(Duration,':')[2] )/3600) total_weekly_contri_hrs
+      from agent_loging_report group by 1,2;
+      
+# 16. Perform inner join, left join and right join based on the agent column and after joining the table export that data into your local system.
+      # Right Join
+      insert overwrite local directory ' /config/workspace' select * from agent_loging_report right join  agent_performance 
+      on agent_loging_report.Agent = agent_performance.Agent; 
+      
+      # Left Join
+      insert overwrite local directory ' /config/workspace' select * from agrnt_loging_report left join  agent_performance 
+      on agent_loging_report.Agent = agent_performance.Agent; 
+      
+      # Inner Join
+      insert overwrite local directory ' /config/workspace' select * from agrnt_loging_report inner join  agent_performance 
+      on agent_loging_report.Agent = agent_performance.Agent; 
+      
+      # Outer Join
+      insert overwrite local directory ' /config/workspace' select * from agrnt_loging_report outer join  agent_performance 
+      on agent_loging_report.Agent = agent_performance.Agent; 
+      
+# 17. Perform partitioning on top of the agent column and then on top of that perform bucketing for each partitioning.
+      create table agent_loging_report_part
+      (
+      sl_no int,
+      `Date` string,
+      Loging_time string,
+      Log_out string,
+      Duration string
+      )
+      partitioned by (Agent string)
+      clustered by (`Date`) into 10 buckets
+      row format delimited
+      fields terminated by ','
+      tblproperties ("skip.header.line.count"="1");
+      
+      # Checking the partition table into hdfs warehouse
+      hadoop fs -ls /user/hive/warehouse/agent_loging_report_part
+      
+      #result : 2023-02-17 18:04 /user/hive/warehouse/agent_loging_report_part/.hive-staging_hive_2023-02-17_18-04-16_035_1750983968387770284-1
+
+      
 
