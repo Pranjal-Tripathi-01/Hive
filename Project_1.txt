@@ -4,21 +4,21 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
 
 
 # 1. Create a schema based on the given dataset
-    create database hive_projects
-    use hive_project
+     create database hive_projects
+     use hive_project
     
-    create table agent_loging_report
-    (
-    sl_no int,
-    Agent string,
-    `Date` string,
-    Login_time string,
-    Log_out string,
-    Duration string
-    )
-    row format delimited
-    fields terminated by ','
-    tblproperties ("skip.header.line.count"="1");
+     create table agent_loging_report
+     (
+     sl_no int,
+     Agent string,
+     `Date` string,
+     Login_time string,
+     Log_out string,
+     Duration string
+     )
+     row format delimited
+     fields terminated by ','
+     tblproperties ("skip.header.line.count"="1");
     
     create table agent_performance
     (
@@ -32,7 +32,7 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
     Total_feedback int
     )
     row format delimited
-    fields terminated by ',';
+    fields terminated by ','
     tblproperties ("skip.header.line.count"="1");
 
 
@@ -52,16 +52,16 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
      select Agent from agent_loging_report;
      
 # 4. Find out agent average rating.
-      select avg(avg_rating) from agent_performance;
-      # answer: 1.4609629649255012
+     select avg(avg_rating) from agent_performance;
+     # answer: 1.4609629649255012
       
 # 5. Total working days for each agents
-      select count(distinct `Date`) from agent_loging_report;
-      # answer: 13
+     select count(distinct `Date`) from agent_loging_report;
+     # answer: 13
       
 # 6. Total query that each agent have taken
-      select sum(Total_chats) from agent_performance;
-      # answer: 14720
+     select sum(Total_chats) from agent_performance;
+     # answer: 14720
       
 # 7. Total Feedback that each agent have received.
      select sum(Total_feedback) from agent_performance;
@@ -77,8 +77,8 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
       select Agent from agent_performance where avg_rating > 4.5;
       
 # 11. How many feedback agents have received more than 4.5 average.
-       select sum(Total_feedback) from agent_performance where avg_rating > 4.5;
-       # answer: 3489
+      select sum(Total_feedback) from agent_performance where avg_rating > 4.5;
+      # answer: 3489
        
 # 12. Average weekly response time for each agent.
       set hive.groupby.position.alias = true;
@@ -106,20 +106,23 @@ Download Dataset 2 - https://drive.google.com/file/d/1-JIPCZ34dyN6k9CqJa-Y8yxIGq
       
 # 16. Perform inner join, left join and right join based on the agent column and after joining the table export that data into your local system.
       # Right Join
-      insert overwrite local directory ' /config/workspace' select * from agent_loging_report right join  agent_performance 
-      on agent_loging_report.Agent = agent_performance.Agent; 
+      insert overwrite local directory '/config/workspace' row format delimited fields terminated by ',' 
+      select * from agent_loging_report right join  agent_performance on agent_loging_report.Agent = agent_performance.Agent; 
       
       # Left Join
-      insert overwrite local directory ' /config/workspace' select * from agent_loging_report left outer join  agent_performance 
-      on agent_loging_report.Agent = agent_performance.Agent; 
-      
+      insert overwrite local directory '/config/workspace' row format delimited fields terminated by ',' 
+      select * from agent_loging_report left join  agent_performance on agent_loging_report.Agent = agent_performance.Agent;
+       
       # Inner Join
-      insert overwrite local directory ' /config/workspace' select * from agent_loging_report inner join  agent_performance 
-      on agent_loging_report.Agent = agent_performance.Agent; 
+      insert overwrite local directory '/config/workspace' row format delimited fields terminated by ',' 
+      select * from agent_loging_report inner join  agent_performance on agent_loging_report.Agent = agent_performance.Agent; 
       
       # Outer Join
-      insert overwrite local directory ' /config/workspace' select * from agent_loging_report outer join  agent_performance 
-      on agent_loging_report.Agent = agent_performance.Agent; 
+      insert overwrite local directory '/config/workspace' row format delimited fields terminated by ',' 
+      select * from agent_loging_report outer join  agent_performance  on agent_loging_report.Agent = agent_performance.Agent;
+      
+      # for seeing the data we can use 'cat' command e.g. :
+      cat /path_to_directory/file_name
       
 # 17. Perform partitioning on top of the agent column and then on top of that perform bucketing for each partitioning.
       create table agent_loging_report_part
