@@ -77,23 +77,80 @@ A: # Creating tables:
     
     # Executing join queries
     
-    SELECT *
-    FROM CUSTOMERS c
-    INNER JOIN ORDERS o
-    ON c.ID = o.CUSTOMER_ID;
+    SELECT * FROM CUSTOMERS cI NNER JOIN ORDERS o ON c.ID = o.CUSTOMER_ID;
 
-    SELECT *
-    FROM CUSTOMERS c
-    LEFT JOIN ORDERS o
-    ON c.ID = o.CUSTOMER_ID;
+    SELECT * FROM CUSTOMERS c LEFT JOIN ORDERS o ON c.ID = o.CUSTOMER_ID;
 
-    SELECT *
-    FROM CUSTOMERS c
-    RIGHT OUTER JOIN ORDERS o
-    ON c.ID = o.CUSTOMER_ID;
+    SELECT * FROM CUSTOMERS c RIGHT OUTER JOIN ORDERS o ON c.ID = o.CUSTOMER_ID;
 
-    SELECT *
-    FROM CUSTOMERS c
-    LEFT OUTER JOIN ORDERS o
-    ON c.ID = o.CUSTOMER_ID;
+    SELECT * FROM CUSTOMERS c LEFT OUTER JOIN ORDERS o ON c.ID = o.CUSTOMER_ID;
+ 
+# Download a data from the given location - https://archive.ics.uci.edu/ml/machine-learning-databases/00360/
+
+1. Create a hive table as per given schema in your dataset.
+    Create external table air_quality
+    (
+    `Date` date,
+    `time` string,
+    co_gt float,
+    s1_co int,
+    nmhc_gt int,
+    C6h6_gt float,
+    S2_nmhc int,
+    Nox_gt int,
+    S3_nox int,
+    No2_gt int,
+    S4_no2 int,
+    s5_o3 int,
+    T float,
+    RH float,
+    AH float
+    )
+    row format delimited
+    fields terminated by ';'
+    tblproperties ("skip.header.line.count" = "1");
+    location ' /user/air_quality_data'
+
+2. Try to place a data into table location.
+    load data local inpath '/config/workspace' into table air_quality;
+    
+3. Perform a select operation.
+    select `Date`, s5_o3 from air_quality;
+    
+4. Fetch the result of the select operation in your local as a csv file.
+    insert overwrite local directory ' /config/workspace' row format delimited fields terminated by ',' select * from air_quality;
+
+5. Perform group by operation.
+    select `Date`, avg(s1_co) from air_quality group by `Date`;
+
+7. Perform filter operation at least 5 kinds of filter examples.
+    select * from air_quality where s1_co > 1500;
+
+8. Show and example of regex operation.
+    select regexp_extract(`Date`, '(^|[^0-9])(20[0-9]{2}|19[0-9]{2})([^0-9]|$)', 2) as extracted_year, avg(s5_o3) from air_quality group by                   regexp_extract(`Date`, '(^|[^0-9])(20[0-9]{2}|19[0-9]{2})([^0-9]|$)', 2);         
+
+9. Alter table operation.
+    alter table air_quality change s1_co S1_CO float;
+
+10. Drop table operation.
+    drop table air_quality;
+    
+12. Order by operation.
+    select  s1_co,  from air_quality  order by s5_o3 asc;
+    
+13. where clause operations you have to perform.
+    select * from air_quality where `Date` rlike '10/03/2004|10/03/2005';
+    
+14. Sorting operation you have to perform. 
+    select  s5_o3, `Date`  from air_quality  order by s5_o3 desc;
+
+15. Distinct operation you have to perform. 
+    select count(distinct `Date`) from air_quality;
+
+16. Like an operation you have to perform.
+    select * from air_quality where `Date` rlike '10/03/2004|10/03/2005';
+    
+17. Table view operation you have to perform.
+    create view air_quality_data as select no2_gt, s5_o3, `Date` from air_quality;
+
 
