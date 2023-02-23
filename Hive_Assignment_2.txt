@@ -37,3 +37,63 @@ A: Incorrect path.
 Q: Is it possible to add 100 nodes when we already have 100 nodes in Hive? If yes, how?
 A: Install Hadoop and Hive on the new nodes: Make sure that the version of Hadoop and Hive you are using is compatible with the existing cluster. Update the cluster configuration: Add the new nodes's hostnames or IP addresses to the workers or slaves file in your Hadoop configuration.
 
+
+
+Hive Practical questions:
+
+Q: Hive Join operations
+
+Create a  table named CUSTOMERS(ID | NAME | AGE | ADDRESS   | SALARY)
+Create a Second  table ORDER(OID | DATE | CUSTOMER_ID | AMOUNT
+)
+
+Now perform different joins operations on top of these tables
+(Inner JOIN, LEFT OUTER JOIN ,RIGHT OUTER JOIN ,FULL OUTER JOIN)
+
+A: # Creating tables:
+
+    CREATE TABLE CUSTOMERS
+    (
+    ID INT,
+    NAME STRING,
+    AGE INT,
+    ADDRESS STRING,
+    SALARY FLOAT
+    )
+    ROW FORMAT DELIMITED
+    FIELDS TERMINATED BY ','
+    STORED AS TEXTFILE;
+
+    CREATE TABLE ORDERS
+    (
+     OID INT,
+     DATE STRING,
+     CUSTOMER_ID INT,
+     AMOUNT FLOAT
+    )
+    ROW FORMAT DELIMITED
+    FIELDS TERMINATED BY ','
+    STORED AS TEXTFILE;
+    
+    # Executing join queries
+    
+    SELECT *
+    FROM CUSTOMERS c
+    INNER JOIN ORDERS o
+    ON c.ID = o.CUSTOMER_ID;
+
+    SELECT *
+    FROM CUSTOMERS c
+    LEFT JOIN ORDERS o
+    ON c.ID = o.CUSTOMER_ID;
+
+    SELECT *
+    FROM CUSTOMERS c
+    RIGHT OUTER JOIN ORDERS o
+    ON c.ID = o.CUSTOMER_ID;
+
+    SELECT *
+    FROM CUSTOMERS c
+    LEFT OUTER JOIN ORDERS o
+    ON c.ID = o.CUSTOMER_ID;
+
