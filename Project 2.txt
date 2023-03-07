@@ -76,4 +76,11 @@ ans: FORD	1280956
 
 
 4.) Find the violation code frequency across 3 precincts which have issued the most number of tickets - do these precinct zones have an exceptionally high frequency of certain violation codes?
-select violation_code, count(*) as frequency from parkin_data_orc where violation_code is not null
+select issuer_precinct, count(violation_code) as f  from parking_data_orc where issuer_precinct=0 or issuer_precinct= 19  or issuer_precinct= 14 and violation_code is not null group by issuer_precinct  order by f desc;
+ans: 0	2388475
+19	521507
+14	344975
+Time taken: 6.5 seconds, Fetched: 3 row(s)
+ans: Yes
+
+5.) Find out the properties of parking violations across different times of the day: The Violation Time field is specified in a strange format. Find a way to make this into a time attribute that you can use to divide into groups.
