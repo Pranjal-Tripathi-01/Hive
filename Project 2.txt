@@ -82,8 +82,3 @@ ans: 0	2388475
 14	344975
 Time taken: 6.5 seconds, Fetched: 3 row(s)
 ans: Yes
-
-5.) Find out the properties of parking violations across different times of the day: The Violation Time field is specified in a strange format. Find a way to make this into a time attribute that you can use to divide into groups.
-select violation_description, from_unixtime(unix_timestamp(violation_time, 'HHmm'), 'h:mm a') time from parking_data_orc limit 5;
-
-6.) Divide 24 hours into 6 equal discrete bins of time. The intervals you choose are at your discretion. For each of these groups, find the 3 most commonly occurring violations
